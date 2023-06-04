@@ -8,8 +8,14 @@
 
     <title>Roteirizador de Aula</title>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./assets/js/open-sans.js"></script>
+    <script src="./assets/js/open-sans-italic.js"></script>
+    <script src="./assets/js/open-sans-light.js"></script>
+    <script src="./assets/js/open-sans-light-italic.js"></script>
+    <script src="./assets/js/pdf-generator.js"></script>
 
     <link rel="stylesheet" href="./assets/css/main.css" />
 </head>
@@ -27,85 +33,139 @@
         <li>Convidar os alunos a agir, e assim deixar o evangelho fazer parte de suas vidas.</li>
     </ul>
 
-    <form action="">
-        <h2 class="mb-6 mt-10 text-xl w-full">Passo 1</h2>
+    <div id="app">
+        <form @submit.prevent="exportPDF">
+            <h2 class="mb-6 mt-10 text-xl w-full">Passo 1</h2>
 
-        <div class="mt-6">
-            <label class="block mb-1" for="thoughts">
-                Leia os capítulos referente a aula contidos no manual do professor, e pondere os pensamentos e as
-                impressões
-                que lhe vierem à mente. Que mensagens abençoaram os alunos de sua classe?
-            </label>
+            <div class="mt-6">
+                <label class="block mb-1" for="thoughts">
+                    Leia os capítulos referente a aula contidos no manual do professor, e pondere os pensamentos e as
+                    impressões
+                    que lhe vierem à mente. Que mensagens abençoaram os alunos de sua classe?
+                </label>
 
-            <textarea class="w-full" name="thoughts" id="thoughts" cols="30" rows="10"></textarea>
-        </div>
+                <textarea v-model="mainMessage" class="p-2 w-full" name="thoughts" id="thoughts" cols="30"
+                    rows="10"></textarea>
+            </div>
 
-        <hr>
+            <hr>
 
-        <h2 class="mb-6 mt-10 text-xl w-full">Passo 2</h2>
+            <h2 class="mb-6 mt-10 text-xl w-full">Passo 2</h2>
 
-        <p class="mb-3">
-            Convidar todos a compartilhar algo que aprenderam esta semana, durante o estudo dos capítulos e versículos
-            indiicados no Vem e Segue me.
-        </p>
+            <p class="mb-3">
+                Convidar todos a compartilhar algo que aprenderam esta semana, durante o estudo dos capítulos e
+                versículos
+                indiicados no Vem e Segue me.
+            </p>
 
-        <p class="mb-3">
-            Obs: Isso será um termômetro para saber quais alunos estudam ou estudaram as aulas.
-        </p>
+            <p class="mb-3">
+                Obs: Isso será um termômetro para saber quais alunos estudam ou estudaram as aulas.
+            </p>
 
-        <hr>
+            <hr>
 
-        <h2 class="mb-6 mt-10 text-xl w-full">Passo 3</h2>
+            <h2 class="mb-6 mt-10 text-xl w-full">Passo 3</h2>
 
-        <p class="mb-3">
-            De acordo com o tempo, ter em mãos 4 ou 5 blocos de escrituras para que os alunos possam ler e após a
-            leitura de cada bloco de escritura, realizar uma boa pergunta que irá gerar um bom debate e oportunidade de
-            os alunos compartilharem suas experiências.
-        </p>
+            <p class="mb-3">
+                De acordo com o tempo, ter em mãos 4 ou 5 blocos de escrituras para que os alunos possam ler e após a
+                leitura de cada bloco de escritura, realizar uma boa pergunta que irá gerar um bom debate e oportunidade
+                de
+                os alunos compartilharem suas experiências.
+            </p>
 
-        <p class="mb-3">
-            Obs: Um bloco de escritura pode ser uma parábola, ou o trecho de uma história do Evangelho, que SEMPRE, nos
-            ensinam um ou mais princípios.
-        </p>
+            <p class="mb-3">
+                Obs: Um bloco de escritura pode ser uma parábola, ou o trecho de uma história do Evangelho, que SEMPRE
+                nos
+                ensinam um ou mais princípios.
+            </p>
 
-        <div class="mt-6">
-            <label class="block mb-1" for="scripture-excerpt">Bloco de escritura</label>
-            <input class="w-full" type="text" name="scripture-excerpt" id="scripture-excerpt">
-        </div>
+            <div class="text-right">
+                <button type="button"
+                    class="py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                    @click="addExcerpt">Adicionar trecho de escritura</button>
+            </div>
+
+            <div v-for="(excerpt, index) in stepThreeExcerpts" class="bg-gray-500 rounded-lg mt-6 p-6 text-white">
+                <div>
+                    <label class="block mb-1" :for="`scripture-excerpt-${index}`">Bloco de escritura</label>
+                    <input v-model="stepThreeExcerpts[index].scripture" class="p-2 text-black w-full" type="text"
+                        name="scripture-excerpt" :id="`scripture-excerpt-${index}`" />
+                </div>
+
+                <div class="mt-4">
+                    <label class="block mb-1" :for="`principle-question-${index}`">Pergunta sobre o princípio
+                        ensinado</label>
+                    <input v-model="stepThreeExcerpts[index].principle" class="p-2 text-black w-full" type="text"
+                        name="principle-question" :id="`principle-question-${index}`" />
+                </div>
+            </div>
 
 
-        <div class="mt-6">
-            <label class="block mb-1" for="principle-question">Pergunta sobre o princípio ensinado</label>
-            <input class="w-full" type="text" name="principle-question" id="principle-question">
-        </div>
+            <hr>
 
-        <hr>
+            <h2 class="mb-6 mt-10 text-xl w-full">Passo 4</h2>
 
-        <h2 class="mb-6 mt-10 text-xl w-full">Passo 4</h2>
+            <p class="mb-3">
+                As aulas dos manuais sempre oferecem recursos adicionais como, vídeos, discursos, citações, etc... O
+                quarto
+                passo seria escolher a última impressão que você professor(a), quer que seus alunos levem para a casa...
+                Através desse vídeo, trecho de um discurso, citação, testemunho de um aluno, o que você escolher para
+                concluir a aula. Escolha pensando no sentimento que você quer que seu aluno leve para a casa, e isso o
+                ajude a ser mais obediente e sinta vontade de voltar na próxima aula.
+            </p>
 
-        <p class="mb-3">
-            As aulas dos manuais sempre oferecem recursos adicionais como, vídeos, discursos, citações, etc... O quarto
-            passo seria escolher a última impressão que você professor(a), quer que seus alunos levem para a casa...
-            através desse vídeo, trecho de um discurso, citação, testemunho de um aluno, o que você escolher para
-            concluir a aula...escolha pensando no sentimento que você quer que seu aluno leve para a casa, e isso o
-            ajude a ser mais obediente e sinta vontade de voltar na próxima aula.
-        </p>
+            <div class="mt-6">
+                <label class="block mb-1" for="ending">
+                    Encerrar com:
+                </label>
+                <textarea v-model="conclusionResources" class="p-2 w-full" name="ending" id="ending" cols="30"
+                    rows="10"></textarea>
+            </div>
 
-        <div class="mt-6">
-            <label class="block mb-1" for="ending">
-                Encerrar com:
-            </label>
-            <textarea class="w-full" name="ending" id="ending" cols="30" rows="10"></textarea>
-        </div>
+            <div class="mt-10 text-center">
+                <button
+                    class="py-2 px-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75">
+                    Finalizar
+                </button>
+            </div>
+        </form>
+    </div>
 
-        <div class="mt-10 text-center">
-            <button
-                class="py-2 px-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
-                Finalizar
-            </button>
-        </div>
-    </form>
+    <script>
 
+        Vue.createApp({
+            data() {
+                return {
+                    mainMessage: '',
+                    conclusionResources: '',
+                    stepThreeExcerpts: [{
+                        scripture: '',
+                        principle: ''
+                    }]
+                }
+            },
+            methods: {
+                addExcerpt() {
+                    const excerpt = {
+                        scripture: '',
+                        principle: ''
+                    }
+
+                    this.stepThreeExcerpts = [
+                        ...this.stepThreeExcerpts,
+                        excerpt
+                    ]
+                },
+                exportPDF() {
+                    if (!window.PdfGenerator) return alert("Falha ao carregar gerador de PDF!")
+
+                    new window
+                        .PdfGenerator(this.mainMessage, this.stepThreeExcerpts, this.conclusionResources)
+                        .export()
+                }
+            }
+        }).mount('#app')
+    </script>
 </body>
 
 </html>
