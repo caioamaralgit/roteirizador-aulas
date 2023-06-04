@@ -1,0 +1,18 @@
+body {
+    background: #ececec;
+    margin: 0;
+    padding: 30px;
+}
+
+h2 {
+    f
+}
+
+h2::after {
+    border: 1px solid #808080;
+    content: '';
+    display: block;
+    height: 1px;
+    margin-top: 5px;
+    width: 80vw;
+}

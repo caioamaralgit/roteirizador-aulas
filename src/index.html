@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Roteirizador de Aula</title>
+
+    <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="./assets/css/main.css" />
+</head>
+
+<body>
+    <h1 class="text-center text-4xl">Roteirizador de Aulas</h1>
+
+    <p class="mb-3 mt-10">Este roteirizador de aulas o ajudará a preparar uma boa aula levando em consideração os
+        seguintes
+        pontos:</p>
+    <ul>
+        <li>A participação dos Alunos durante a aula, através de boas perguntas, que os ajudem a compartilhar suas
+            experiências.</li>
+        <li>Ensinar os princípios contidos nos capítulos estudados do Vem e Segue me.</li>
+        <li>Convidar os alunos a agir, e assim deixar o evangelho fazer parte de suas vidas.</li>
+    </ul>
+
+    <form action="">
+        <h2 class="mb-6 mt-10 text-xl w-full">Passo 1</h2>
+
+        <div class="mt-6">
+            <label class="block mb-1" for="thoughts">
+                Leia os capítulos referente a aula contidos no manual do professor, e pondere os pensamentos e as
+                impressões
+                que lhe vierem à mente. Que mensagens abençoaram os alunos de sua classe?
+            </label>
+
+            <textarea class="w-full" name="thoughts" id="thoughts" cols="30" rows="10"></textarea>
+        </div>
+
+        <hr>
+
+        <h2 class="mb-6 mt-10 text-xl w-full">Passo 2</h2>
+
+        <p class="mb-3">
+            Convidar todos a compartilhar algo que aprenderam esta semana, durante o estudo dos capítulos e versículos
+            indiicados no Vem e Segue me.
+        </p>
+
+        <p class="mb-3">
+            Obs: Isso será um termômetro para saber quais alunos estudam ou estudaram as aulas.
+        </p>
+
+        <hr>
+
+        <h2 class="mb-6 mt-10 text-xl w-full">Passo 3</h2>
+
+        <p class="mb-3">
+            De acordo com o tempo, ter em mãos 4 ou 5 blocos de escrituras para que os alunos possam ler e após a
+            leitura de cada bloco de escritura, realizar uma boa pergunta que irá gerar um bom debate e oportunidade de
+            os alunos compartilharem suas experiências.
+        </p>
+
+        <p class="mb-3">
+            Obs: Um bloco de escritura pode ser uma parábola, ou o trecho de uma história do Evangelho, que SEMPRE, nos
+            ensinam um ou mais princípios.
+        </p>
+
+        <div class="mt-6">
+            <label class="block mb-1" for="scripture-excerpt">Bloco de escritura</label>
+            <input class="w-full" type="text" name="scripture-excerpt" id="scripture-excerpt">
+        </div>
+
+
+        <div class="mt-6">
+            <label class="block mb-1" for="principle-question">Pergunta sobre o princípio ensinado</label>
+            <input class="w-full" type="text" name="principle-question" id="principle-question">
+        </div>
+
+        <hr>
+
+        <h2 class="mb-6 mt-10 text-xl w-full">Passo 4</h2>
+
+        <p class="mb-3">
+            As aulas dos manuais sempre oferecem recursos adicionais como, vídeos, discursos, citações, etc... O quarto
+            passo seria escolher a última impressão que você professor(a), quer que seus alunos levem para a casa...
+            através desse vídeo, trecho de um discurso, citação, testemunho de um aluno, o que você escolher para
+            concluir a aula...escolha pensando no sentimento que você quer que seu aluno leve para a casa, e isso o
+            ajude a ser mais obediente e sinta vontade de voltar na próxima aula.
+        </p>
+
+        <div class="mt-6">
+            <label class="block mb-1" for="ending">
+                Encerrar com:
+            </label>
+            <textarea class="w-full" name="ending" id="ending" cols="30" rows="10"></textarea>
+        </div>
+
+        <div class="mt-10 text-center">
+            <button
+                class="py-2 px-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                Finalizar
+            </button>
+        </div>
+    </form>
+
+</body>
+
+</html>
