@@ -15,7 +15,7 @@
             this.defaultXPosition = 20;
             this.defaultYPosition = 20;
 
-            this.maxLineWidth = 195;
+            this.maxLineWidth = 190;
             this.maxPageHeight = 280;
 
             this.lineHeight = 10;
@@ -24,7 +24,12 @@
             this.xPosition = 20;
             this.yPosition = 20;
 
-            this.instance = new jsPDF();
+            this.instance = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: [297, 210],
+            });
+
             this.instance.setFont("OpenSans-Regular");
         }
 
@@ -93,19 +98,125 @@
             this.instance.setFontSize(12);
         }
 
+        writeExcerpt(excerpt) {
+            this.instance.setFont("OpenSans-Light", "normal");
+
+            this.writeText("Passagem:");
+
+            this.instance.setFont("OpenSans-Light", "italic");
+
+            this.writeText(excerpt.scripture);
+
+            this.breakLine();
+
+            this.instance.setFont("OpenSans-Light", "normal");
+
+            this.writeText("Pergunta sobre o princípio:");
+
+            this.instance.setFont("OpenSans-Light", "italic");
+
+            this.writeText(excerpt.question);
+        }
+
+        writeFooterData() {
+            this.instance.setFont("OpenSans-Regular", "normal");
+            this.instance.setFontSize(8);
+
+            const totalPages = this.instance.internal.getNumberOfPages();
+            const date = new Date();
+
+            const now = `${date.getDate().toString().padStart(2, "0")}/${(
+                date.getMonth() + 1
+            )
+                .toString()
+                .padStart(2, "0")}/${date.getFullYear()} ${(date.getHours() - 3)
+                .toString()
+                .padStart(2, "0")}:${date
+                .getMinutes()
+                .toString()
+                .padStart(2, "0")}:${date
+                .getSeconds()
+                .toString()
+                .padStart(2, "0")}`;
+
+            for (let page = 1; page <= totalPages; page++) {
+                this.instance.setPage(page);
+
+                this.instance.text(
+                    `Gerado em ${now}`,
+                    this.defaultXPosition,
+                    290
+                );
+
+                this.instance.text(
+                    `Página ${
+                        this.instance.internal.getCurrentPageInfo().pageNumber
+                    } de ${totalPages}`,
+                    170,
+                    290
+                );
+            }
+        }
+
+        addLineSeparator() {
+            this.breakLine();
+            this.breakLine();
+
+            this.instance.line(
+                this.defaultXPosition,
+                this.yPosition,
+                this.maxLineWidth,
+                this.yPosition
+            );
+
+            this.breakLine();
+            this.breakLine();
+        }
+
         export() {
             this.writeTitle();
 
             this.breakLine();
             this.breakLine();
 
-            this.writeText("Mensagem principal:");
+            if (this.mainMessage) {
+                this.writeText("Mensagem principal:");
+
+                this.breakLine();
+
+                this.instance.setFont("OpenSans-Regular", "italic");
+
+                this.writeText(`“${this.mainMessage}”`);
+
+                this.instance.setFont("OpenSans-Regular", "normal");
+
+                this.addLineSeparator();
+            }
+
+            this.writeText("Escrituras selecionadas:");
 
             this.breakLine();
 
-            this.instance.setFont("OpenSans-Regular", "italic");
+            this.scriptureExcerpts.forEach((excerpt, index) => {
+                this.writeExcerpt(excerpt);
+                if (index < this.scriptureExcerpts.length - 1) this.breakLine();
+            });
 
-            this.writeText(`“${this.mainMessage}”`);
+            this.instance.setFont("OpenSans-Regular", "normal");
+
+            if (this.conclusionResources) {
+                this.addLineSeparator();
+
+                this.writeText("Recursos para finalização:");
+
+                this.breakLine();
+
+                this.instance.setFont("OpenSans-Regular", "italic");
+
+                this.writeText(this.conclusionResources);
+            }
+
+            this.writeFooterData();
 
             this.instance.save(
                 `aula-vem-e-segue-me-${new Date().getTime()}.pdf`

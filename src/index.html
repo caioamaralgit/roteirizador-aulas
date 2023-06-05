@@ -44,8 +44,8 @@
                     que lhe vierem à mente. Que mensagens abençoaram os alunos de sua classe?
                 </label>
 
-                <textarea v-model="mainMessage" class="p-2 w-full" name="thoughts" id="thoughts" cols="30"
-                    rows="10"></textarea>
+                <textarea v-model="mainMessage" class="p-2 w-full" name="thoughts" id="thoughts" cols="30" rows="10"
+                    maxlength="1000"></textarea>
             </div>
 
             <hr>
@@ -95,7 +95,7 @@
                 <div class="mt-4">
                     <label class="block mb-1" :for="`principle-question-${index}`">Pergunta sobre o princípio
                         ensinado</label>
-                    <input v-model="stepThreeExcerpts[index].principle" class="p-2 text-black w-full" type="text"
+                    <input v-model="stepThreeExcerpts[index].question" class="p-2 text-black w-full" type="text"
                         name="principle-question" :id="`principle-question-${index}`" />
                 </div>
             </div>
@@ -140,7 +140,7 @@
                     conclusionResources: '',
                     stepThreeExcerpts: [{
                         scripture: '',
-                        principle: ''
+                        question: ''
                     }]
                 }
             },
@@ -148,7 +148,7 @@
                 addExcerpt() {
                     const excerpt = {
                         scripture: '',
-                        principle: ''
+                        question: ''
                     }
 
                     this.stepThreeExcerpts = [
